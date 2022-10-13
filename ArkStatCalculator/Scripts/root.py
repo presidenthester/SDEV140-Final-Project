@@ -1,5 +1,8 @@
+from logging.config import dictConfig
 from msilib.schema import ComboBox
 from multiprocessing import BufferTooShort
+from os import popen
+from select import select
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
@@ -7,8 +10,43 @@ from tkinter import font
 from tkinter.ttk import *
 from turtle import title, width
 from PIL import ImageTk, Image
+from tkinter import messagebox
+from anky_sheet import *
+from bronto_sheet import *
+from carno_sheet import *
+from daeodon import *
+from giga_sheet import *
+from megatherium_sheet import *
+from raptor_sheet import *
+from rex_sheet import *
+from spino_sheet import *
+from theri_sheet import *
+from yuty_sheet import *
 
-# Setup
+# Full documentaion for the individual dino sheets can be found in anky_sheet.py and applies to all dino sheets.  The other dino sheets have abridged documentation
+
+
+#  This is a list for the combo box.  T
+#  These are also used as a check in the later function calls
+
+
+dinoComboBox = [
+    "Ankylosaurus", 
+    "Brontosaurus", 
+    "Carnotaurus", 
+    "Daeodon", 
+    "Giganotosaurus", 
+    "Megatherium", 
+    "Raptor", 
+    "Rex", 
+    "Spino", 
+    "Therizinosaurus", 
+    "Yutyrannus"
+]
+
+
+
+# Window setup
 root = Tk()
 root.title("Ark Wild Dino Stat Calculator")
 root.iconbitmap("C:\\FinalProject\\ArkStatCalculator\\Icons\\Nibby.ico")
@@ -63,8 +101,8 @@ def openInfo():
     # Create canvas for buttons and text
     infoCanvas = Canvas(infoPage, width=800, height=1000)
     infoCanvas.pack(fill="both", expand=True)
-    infoExitButton = Button(infoPage, text="exit", command=infoPage.destroy)
-    infoExit = infoCanvas.create_window(400, 975, anchor="se", window=infoExitButton)
+    infoExitButton = Button(infoPage, text="BACK",width=12, command=infoPage.destroy)
+    infoExit = infoCanvas.create_window(400, 975, anchor="s", window=infoExitButton)
     
     infoCanvas.create_text(400, 25, text="Ark Wild Stat Calculator", font= ("Copperplate Gothic Bold", "18"))
     infoCanvas.create_text(400, 45, text="Version 1.0", font= ("Copperplate Gothic Bold", "12"))
@@ -73,7 +111,7 @@ def openInfo():
     infoCanvas.create_text(400, 150, fill="black", justify="left", font=("Helvetica", "14"), text=
     "Future app instructions. \nThis is a test.")
 
-       
+
 # Define Info Button
 infoButton = Button(root, text= "Info", command= openInfo)
 
@@ -81,29 +119,83 @@ infoButton = Button(root, text= "Info", command= openInfo)
 canInfoButton = myCanvas.create_window(25, 975, anchor= "sw", width=100, window= infoButton)
 
 
-# Create label for entry box in canvas
-myCanvas.create_text(1025, 470, text= "Enter dino level", font= ("Copperplate Gothic Bold", "18"), fill="#2762de")
-myCanvas.create_text(1030, 470, text= "Enter dino level", font= ("Copperplate Gothic Bold", "18"), fill="white")
-
-
-# Create entry box and place in canvas
-levelEntry = Entry(root, width=28)
-myCanvas.create_window(1150,500, anchor= "e", width=250, window=levelEntry)
-
-
 # Create combo box and place in canvas
-from dicsAndLists import dinoComboBox
+
 options = dinoComboBox
 comboText = "Select Dino"
 dinoSelectBox = ttk.Combobox(root, value= options)
 dinoSelectBox["state"] = "readonly"
-myCanvas.create_window(550,500, anchor="w", width=250, window=dinoSelectBox)
+dinoSelectBox.set(comboText)
+myCanvas.create_window(850,500, anchor="center", width=250, window=dinoSelectBox)
 
-# Define funtion to get value Combo box AND entry box
-def getSelection(dinoSelectBox, levelEntry):
-        dinoVal = dinoSelectBox.get()
-        levelVal = levelEntry.get()
+# Error pop ups for dino selection and level entry
+def badDinoPop():
+    response = messagebox.showerror("ERROR", "You must select a dino from the drop down menu.")
+    if response == "ok":
+        mainloop()
 
+def badLevelPop():
+    response = messagebox.showerror("ERROR", "You must enter a number for the dinos level")
+    if response == "ok":
+        mainloop()
+
+def badDinoandLevelPop():
+    response = messagebox.showerror("ERROR", "You must select a dino from the drop down menu. \nYou must enter a number for the dinos level")
+    if response == "ok":
+        mainloop()
+
+
+# Get dino slection from combo box
+def getDino():
+    global dinoVal
+    dinoVal = dinoSelectBox.get()
+
+    if dinoVal == "Select Dino":
+        badDinoPop()
+    elif dinoVal == "Ankylosaurus":
+        ankyPage()
+    elif dinoVal == "Brontosaurus":
+        brontopage()
+    elif dinoVal == "Carnotaurus":
+        carnoPage()
+    elif dinoVal == "Daeodon":
+        daeodonPage()
+    elif dinoVal == "Giganotosaurus":
+        gigaPage()
+    elif dinoVal == "Megatherium":
+        megatheriumPage()
+    elif dinoVal == "Raptor":
+        raptorPage()
+    elif dinoVal == "Rex":
+        rexPage()
+    elif dinoVal == "Spino":
+        spinoPage()
+    elif dinoVal == "Therizinosaurus":
+        theriPage()
+    elif dinoVal == "Yutyrannus":
+        yutyPage()
+    else:
+        print(dinoVal)
+        return dinoVal
+
+
+
+
+def getSelection():
+    getDino()
+    
+    
+    
+    
+
+        
+       
+
+    
+        
+# Create button to take user to calculator
+calcButton = Button(root, width=25, text="Calculate Stats", command=getSelection)
+myCanvas.create_window(850, 750, anchor= "center", window= calcButton)
 
 
 
